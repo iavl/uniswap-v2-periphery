@@ -1,6 +1,6 @@
 pragma solidity =0.6.6;
 
-import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import './interfaces/IUniswapV2Factory.sol';
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 
 import './interfaces/IUniswapV2Router02.sol';
@@ -36,11 +36,12 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
         uint amountADesired,
         uint amountBDesired,
         uint amountAMin,
-        uint amountBMin
+        uint amountBMin,
+        uint feeBps
     ) internal virtual returns (uint amountA, uint amountB) {
         // create the pair if it doesn't exist yet
         if (IUniswapV2Factory(factory).getPair(tokenA, tokenB) == address(0)) {
-            IUniswapV2Factory(factory).createPair(tokenA, tokenB);
+            IUniswapV2Factory(factory).createPair(tokenA, tokenB, feeBps);
         }
         (uint reserveA, uint reserveB) = UniswapV2Library.getReserves(factory, tokenA, tokenB);
         if (reserveA == 0 && reserveB == 0) {
@@ -65,10 +66,11 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
         uint amountBDesired,
         uint amountAMin,
         uint amountBMin,
+        uint feeBps,
         address to,
         uint deadline
     ) external virtual override ensure(deadline) returns (uint amountA, uint amountB, uint liquidity) {
-        (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);
+        (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, feeBps);
         address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
         TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
         TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
@@ -79,6 +81,7 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
         uint amountTokenDesired,
         uint amountTokenMin,
         uint amountETHMin,
+        uint feeBps,
         address to,
         uint deadline
     ) external virtual override payable ensure(deadline) returns (uint amountToken, uint amountETH, uint liquidity) {
@@ -88,7 +91,8 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
             amountTokenDesired,
             msg.value,
             amountTokenMin,
-            amountETHMin
+            amountETHMin,
+            feeBps
         );
         address pair = UniswapV2Library.pairFor(factory, token, WETH);
         TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);
