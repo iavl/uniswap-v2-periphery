@@ -22,3 +22,15 @@ The following assumes the use of `node@>=10`.
 ## Run Tests
 
 `yarn test`
+
+## Deploy
+```
+forge script script/DeployRouter.s.sol:DeployRouter --sig 'run()' \
+--chain-id $CHAIN_ID \
+--rpc-url $ETH_RPC_URL \
+--private-key $PRIVATE_KEY \
+--verifier-url $VERIFIER_URL \
+--verifier $VERIFIER \
+--verify \
+--broadcast --ffi --legacy -vvvv
+```
