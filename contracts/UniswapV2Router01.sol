@@ -33,12 +33,11 @@ contract UniswapV2Router01 is IUniswapV2Router01 {
         uint amountADesired,
         uint amountBDesired,
         uint amountAMin,
-        uint amountBMin,
-        uint feeBps
+        uint amountBMin
     ) private returns (uint amountA, uint amountB) {
         // create the pair if it doesn't exist yet
         if (IUniswapV2Factory(factory).getPair(tokenA, tokenB) == address(0)) {
-            IUniswapV2Factory(factory).createPair(tokenA, tokenB, feeBps);
+            IUniswapV2Factory(factory).createPair(tokenA, tokenB);
         }
         (uint reserveA, uint reserveB) = UniswapV2Library.getReserves(factory, tokenA, tokenB);
         if (reserveA == 0 && reserveB == 0) {
@@ -63,11 +62,10 @@ contract UniswapV2Router01 is IUniswapV2Router01 {
         uint amountBDesired,
         uint amountAMin,
         uint amountBMin,
-        uint feeBps,
         address to,
         uint deadline
     ) external override ensure(deadline) returns (uint amountA, uint amountB, uint liquidity) {
-        (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, feeBps);
+        (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);
         address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
         TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
         TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
@@ -78,7 +76,6 @@ contract UniswapV2Router01 is IUniswapV2Router01 {
         uint amountTokenDesired,
         uint amountTokenMin,
         uint amountETHMin,
-        uint feeBps,
         address to,
         uint deadline
     ) external override payable ensure(deadline) returns (uint amountToken, uint amountETH, uint liquidity) {
@@ -88,8 +85,7 @@ contract UniswapV2Router01 is IUniswapV2Router01 {
             amountTokenDesired,
             msg.value,
             amountTokenMin,
-            amountETHMin,
-            feeBps
+            amountETHMin
         );
         address pair = UniswapV2Library.pairFor(factory, token, WETH);
         TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);

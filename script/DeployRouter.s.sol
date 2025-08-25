@@ -7,8 +7,8 @@ import "../contracts/UniswapV2Router02.sol";
 
 contract DeployRouter is Script {
     function run() external {
-        address factory = 0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E;
-        address weth = 0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48E;
+        address factory = 0x34656BC987ef205Da35c2a424A92c9A934bDE378;
+        address weth = 0x87c0DD2AabbB470a63579F3850860e1647c4edb4;
         
         vm.startBroadcast();
         

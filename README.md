@@ -32,5 +32,5 @@ forge script script/DeployRouter.s.sol:DeployRouter --sig 'run()' \
 --verifier-url $VERIFIER_URL \
 --verifier $VERIFIER \
 --verify \
---broadcast --ffi --legacy -vvvv
+--broadcast --ffi --legacy -vvvv 
 ```
